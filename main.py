@@ -1,5 +1,5 @@
 
-from menu import menu, sleep, color
+from menu import menu, sleep
 from termcolor import colored
 import random
 import string
@@ -90,7 +90,7 @@ def cotation2(list_of_answers):
 
 
     
-def cotation3(list_of_answers, super_list):
+def cotation3(list_of_answers, list_pour_lesperance):
     #cotation pondérée : 
     # pré : nombre de réponse vrai (+1) et nombre de réponse fausse (- l'esperence )
     # on calcule l'esperance
@@ -98,10 +98,10 @@ def cotation3(list_of_answers, super_list):
     i = 0
     k = 0
     for answer in list_of_answers:
-        if len(super_list[k]) == 1:
+        if len(list_pour_lesperance[k]) == 1:
             esperancex = 0
         else:
-            esperancex = -(1/(len(super_list[k]) - 1)) 
+            esperancex = -(1/(len(list_pour_lesperance[k]) - 1)) 
         if answer == True:
             i+=1
         elif answer == False:
@@ -133,6 +133,9 @@ def resultat_final(i, questions):
         print(f"{i}/{lenght}")
         print("Parfait !")
 
+def color(text, color):
+    return print(colored(text, color, attrs=['bold', 'blink', "reverse"]))
+
 
         
 def random_QCM(choose_quest):
@@ -140,21 +143,14 @@ def random_QCM(choose_quest):
     # pré : document txt 
     # post : renvoie les choix aléatoires dans une liste
     questions = build_questionnaire(f"{choose_quest}")
-    list_random = []
-    aleatoire_choice = random.choice(questions)
-    list_random.append(aleatoire_choice)
-    checklist= [0]
-    z = 1
-    while len(list_random) < len(questions):
-        k = 0
-        a = random.choice(questions)
-        for i in checklist:
-            if list_random[i] != a:
-                k += 1
-        if k == len(checklist):
-            list_random.append(a)
-            checklist.append(z)
-            z += 1
+    while True:
+        list_random = []
+        aleatoire_choice = random.choices(questions, k = len(questions))
+        for element in aleatoire_choice:
+            if element not in list_random:
+                list_random.append(element)
+        if len(list_random) == len(aleatoire_choice):
+            break
     return list_random
 
     
@@ -195,7 +191,7 @@ def Quizz():
         # ici je stock toutes les questions
         
         number_of_questions = []
-        super_list = []
+        list_pour_lesperance = []
         for i in range(0, len(questionnaire)):
             h = questionnaire[i][0]
             number_of_questions.append(h)
@@ -218,7 +214,7 @@ def Quizz():
                 for y in range(0, len(questionnaire[b][1])):
                     number_of_answers.append(questionnaire[place][1][y][0])
                     list_cotation_3.append([questionnaire[place][1][y][0]])
-                super_list.append(list_cotation_3)
+                list_pour_lesperance.append(list_cotation_3)
             elif len(if_true) != 1:
                 check_list = []
                 for y in range(0, len(questionnaire[b][1])):
@@ -227,7 +223,7 @@ def Quizz():
                 taille = len(check_list) - len(if_true) +1
                 while len(list_cotation_3) < taille:
                     list_cotation_3.append("object")
-                super_list.append(list_cotation_3)
+                list_pour_lesperance.append(list_cotation_3)
             random.shuffle(number_of_answers)
             for z in number_of_answers:
                 print(str(katre)+":", z)
@@ -328,7 +324,7 @@ def Quizz():
         elif a == 1:
             resultat_final(cotation2(list_of_answers), questionnaire)
         elif a == 2:
-            resultat_final(cotation3(list_of_answers, super_list), questionnaire)
+            resultat_final(cotation3(list_of_answers, list_pour_lesperance), questionnaire)
         while True:
             results = input("Voulez-vous voir vos résultats selon les autres systèmes de cotation ? y/n \n")
             if results == "y":
@@ -337,7 +333,7 @@ def Quizz():
                     resultat_final(cotation2(list_of_answers), questionnaire)
                     print("\n")
                     print("Selon la cotation 3 : ")
-                    resultat_final(cotation3(list_of_answers, super_list), questionnaire)
+                    resultat_final(cotation3(list_of_answers, list_pour_lesperance), questionnaire)
                     print("\n")
                     break
                 elif a == 1:
@@ -345,7 +341,7 @@ def Quizz():
                     resultat_final(cotation1(list_of_answers), questionnaire) 
                     print("\n")
                     print("Selon la cotation 3 : ")
-                    resultat_final(cotation3(list_of_answers, super_list), questionnaire)
+                    resultat_final(cotation3(list_of_answers, list_pour_lesperance), questionnaire)
                     print("\n")
                     break
                 elif a == 2:
