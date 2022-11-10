@@ -1,5 +1,4 @@
 import time
-from termcolor import colored
 
 def sleep(t):
     return time.sleep(t)
@@ -27,5 +26,4 @@ def menu():
 def cotation_presentation():
     print("Il y a 3 systèmes de cotation, le classique = 1, celui à point négatif = 2, \net le dernier qui est un système de cotation pondéré !\n ")
 
-def color(text, color):
-    return print(colored(text, color, attrs=['bold', 'blink', "reverse"]))
+

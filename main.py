@@ -157,12 +157,15 @@ def random_QCM(choose_quest):
 
 
 def Quizz():
+    #Fonction principale du code qui génère le qcm
+    #pré : /
+    #post : Affiche le jeux qcm dans son intégralité
     run = True
-    print("Bienvenue dans le menu de ce générateur de QCM ! Veuillez suivre les instructions qui vont suivre.")
-    while run:
+    print("Bienvenue dans le menu de ce générateur de QCM ! Veuillez suivre les instructions qui vont suivre.") #Introductio du qcm
+    while run:#Boucle principale qui permet de faire tourner le programme jusqu'a ce que l'utilisateur décide de s'arreter, permet de faire plusieurs parties.
         while True:
             choose_quest = input("Insérez le nom du fichier qui contient vos questions : \n ==>")
-            try:
+            try: #Gestion des erreures, pour s'assurer que l'utilisateur rentre un document existant
                 files = open(f"{choose_quest}.txt", "r")
                 files.close()
                 break
@@ -170,7 +173,7 @@ def Quizz():
                 print("Ce fichier n'existe pas...")
         menu()
         print("Avec quel systeme de cotation voulez-vous jouer ?")
-        while True:
+        while True: #Choix du type de cotation, boucle qui permet de redemander le type de cotation tant que l'utilisateur ne rentre pas un chiffre correct.
             syst_cot = input("==> ")
             if syst_cot == "1":
                 a = 0
@@ -186,7 +189,7 @@ def Quizz():
         sleep(0.5)
         print("Bonne chance !")
         print("---------------------")
-        questionnaire = random_QCM(choose_quest + ".txt")
+        questionnaire = random_QCM(choose_quest + ".txt")#Variable contenant la fonctions qui permet d'afficher les questions aléatoirement.
         
         # ici je stock toutes les questions
         
@@ -197,7 +200,6 @@ def Quizz():
             number_of_questions.append(h)
 
         place = 0
-        b = 0
         x = 0
         list_of_answers = []
         for i in number_of_questions:
@@ -207,35 +209,35 @@ def Quizz():
                 if v[1] == True:
                     if_true.append("True")
             x += 1
-            katre = 1
+            num_quest = 1
             print(i, "\n")
             number_of_answers = []
             if len(if_true) == 1:
-                for y in range(0, len(questionnaire[b][1])):
+                for y in range(0, len(questionnaire[place][1])):
                     number_of_answers.append(questionnaire[place][1][y][0])
                     list_cotation_3.append([questionnaire[place][1][y][0]])
                 list_pour_lesperance.append(list_cotation_3)
             elif len(if_true) != 1:
                 check_list = []
-                for y in range(0, len(questionnaire[b][1])):
+                for y in range(0, len(questionnaire[place][1])):
                     number_of_answers.append(questionnaire[place][1][y][0])
                     check_list.append(questionnaire[place][1][y][0])
                 taille = len(check_list) - len(if_true) +1
                 while len(list_cotation_3) < taille:
                     list_cotation_3.append("object")
                 list_pour_lesperance.append(list_cotation_3)
-            random.shuffle(number_of_answers)
+            random.shuffle(number_of_answers)#Mélange la liste de réponse, pour les afficher de manières différentes a chaque tentative.
             for z in number_of_answers:
-                print(str(katre)+":", z)
-                katre += 1
-            if len(if_true) == 1:
+                print(str(num_quest)+":", z)
+                num_quest += 1
+            if len(if_true) == 1: #Cette partie permet de gerer les questions avec seulement une réponse.
                 w = input("Answer ==> ")
-                while w.isdigit() == False:
+                while w.isdigit() == False: #Verifie si l'input est bien un nombre
                     print("Ceci n'est pas un nombre")
                     w = input("Answer ==> ")
                 w = int(w)
                 while True:
-                    try:
+                    try: #Gestion d'erreure de type indexError, si l'utilisateur rentre un nombre out of range.
                         question = number_of_answers[w - 1]
                         break
                     except IndexError:
@@ -246,19 +248,18 @@ def Quizz():
                 for j in questionnaire[place][1]:
                         if j[0] == question:
                             answer = j[1]
-                if answer == True:
+                if answer == True: #Si la réponse donné est correcte, affiche "Bonne réponse" en vert
                     sleep(0.2)
                     color("Bonne réponse !", "green")
                     print("-----------------------------------------------------------------------------")
                     list_of_answers.append(answer)
-                else:
+                else: #Si la réponse est fausse, affiche "Mauvaise réponse..." en rouge.
                     sleep(0.2)
                     color("Mauvaise réponse...", "red")
                     print("-----------------------------------------------------------------------------")
                     list_of_answers.append(answer)
                 place += 1
-                b +=1
-            elif len(if_true) != 1:
+            elif len(if_true) != 1: #Gère les réponses avec plusieurs réponse possible.
                 listing = []
                 print("Il y'a plusieurs réponses possibles à cette question, entrez toutes les réponses exactes pour avoir juste !")
                 print("Entrez 'YES' si vous pensez avoir toutes les réponses; autrement , entrez une réponse supplémentaire. Si vous avez entré une réponse par erreur, tappez 'REMOVE'")
@@ -267,7 +268,7 @@ def Quizz():
                     s = s.lower()
                     if s == "yes":
                         break
-                    elif s == "remove" and len(listing) != 0:
+                    elif s == "remove" and len(listing) != 0:#Retire le dernier nombre input de la liste des réponses donné.
                         remove = listing[len(listing) - 1]
                         listing.remove(remove)
                         print(f"Vos réponses actuelles : {listing}")
@@ -293,13 +294,13 @@ def Quizz():
                                 answer = j[1]
                         if answer == True:
                             list_if_true.append(answer)
-                    if len(list_if_true) == len(if_true):
+                    if len(list_if_true) == len(if_true):#Si la réponse donné est correcte, affiche "Bonne réponse" en vert
                         answer = True
                         sleep(0.2)
                         color("Bonne réponse !", "green")
                         print("-----------------------------------------------------------------------------")
                         list_of_answers.append(answer)
-                    else:
+                    else: #Si la réponse est fausse, affiche "Mauvaise réponse..." en rouge.
                         answer = False
                         sleep(0.2)
                         color("Mauvaise réponse...Soit c'est la mauvaise réponse, soit vous n'avez pas trouvé TOUTES les réponses possibles ! ", "red")
@@ -313,19 +314,13 @@ def Quizz():
                     list_of_answers.append(answer)
 
                 place += 1
-                b += 1
-            
-        number_of_questions = []
-        for y in range (0, len(questionnaire)):
-            b = len(questionnaire[y][1])
-            number_of_questions.append(b)
-        if a == 0:
+        if a == 0:  #Permet de d'utiliser le bon systemes de cotations en fonctions de ce que l'utilisateur a choisis
             resultat_final(cotation1(list_of_answers), questionnaire)
         elif a == 1:
             resultat_final(cotation2(list_of_answers), questionnaire)
         elif a == 2:
             resultat_final(cotation3(list_of_answers, list_pour_lesperance), questionnaire)
-        while True:
+        while True: # Affichage des points avec tous les systemes de cotations
             results = input("Voulez-vous voir vos résultats selon les autres systèmes de cotation ? y/n \n")
             if results == "y":
                 if a == 0:
@@ -355,7 +350,7 @@ def Quizz():
             elif results == "n":
                 break
 
-        while True:
+        while True:# Affiche toutes les bonne réponses si l'utilisateurs le souhaite.
             voircorr = input("Voulez-vous voir le correctif de ce QCM ? y/n")
             if voircorr == "y":
                 correctif(questionnaire)
@@ -364,11 +359,11 @@ def Quizz():
                 print("D'accord !")
                 break
             else:
-                print("Ceci n'est pas une réponse !")
+                print("Ceci n'est pas une réponse !") #Affiche ce message si l'input ne correspond pas.
         print("Voulez-vous refaire une partie ? y/n")
         retry = input("==> ")
 
-        if retry.lower() == "y":
+        if retry.lower() == "y": #Commande qui permet de refaire une partie ou non.
             run = True  
         elif retry.lower() == "n":
             print("Merci d'avoir joué !")
